@@ -2,16 +2,12 @@ pipeline {
     agent any
 
 	stages {
-		stage('SonarQube Analysis') {
+		stage('Quality Gate') {
 			steps {
 				withSonarQubeEnv('SQserver') {
 					sh './sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner'
 				}
-			}
-	        }
 
-		stage('Quality Gate') {
-			steps {
 				script {
 					def qg = waitForQualityGate()
 					if(qg.status != 'OK') {
