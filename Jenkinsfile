@@ -3,7 +3,7 @@ pipeline {
 
 	stages {
 		stage('SonarQube Analysis') {
-			steps {
+			withSonarQubeEnv('SQserver') {
 				sh './sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner'
 			}
 	        }
