@@ -3,17 +3,23 @@ pipeline {
 
     stages {
         stage('SonarQube Analysis') {
-            steps {
-		withSonarQubeEnv('SQtoto') {
-			sh 'sonar-scanner   -Dsonar.projectKey=toto   -Dsonar.sources=.   -Dsonar.host.url=http://localhost:9000   -Dsonar.token=sqp_d217c0b289d7cddc106728c703c39145d6e8a5e3'
+		steps {
+			sh 'sonar-scanner'
 		}
-            }
         }
-        stage('List files') {
-            steps {
-                sh 'ls -lah .'
-            }
-        }
-    }
-}
 
+	stage('Quality Gate') {
+		timeout(time: 1, unit: 'HOURS') {
+			def qg = waitForQualityGate()
+			if(qg.status != 'OK') {
+				error "Quality Gate failure : ${qg.status}"
+			}
+		}
+	}
+
+        stage('List files') {
+		steps {
+			sh 'ls -lah .'
+		}
+	}
+}
