@@ -10,9 +10,11 @@ pipeline {
 
 		stage('Quality Gate') {
 			steps {
-				def qg = waitForQualityGate()
-				if(qg.status != 'OK') {
-					error "Quality Gate failure : ${qg.status}"
+				script {
+					def qg = waitForQualityGate()
+					if(qg.status != 'OK') {
+						error "Quality Gate failure : ${qg.status}"
+					}
 				}
 			}
 		}
